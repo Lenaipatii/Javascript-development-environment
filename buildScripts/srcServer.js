@@ -1,17 +1,23 @@
-//reference for the express
-var express = require('express');
+import express from 'express';
+import path from 'path';
+import open from 'open';
+import webpack from 'webpack';
+import config from '../webpack.config.dev';
 
-//reference for the path
-var path = require('path');
+/* eslint-disable no-console */
 
-//it will open our site in the browser
-var open = require('open');
+const port = 3000;
+const app = express();
+const compiler = webpack(config);
 
-//stores the port
-var port = 3000;
+app.use(require('webpack-dev-middleware')(compiler, {
+  noInfo: true,
+  publicPath: config.output.publicPath
+}));
 
-//instance of express
-var app = express();
+app.get('/', function(req, res) {
+  res.sendFile(path.join(__dirname, '../src/index.html'));
+});
 
 //any references to the root should be handle by this function, whitch takes an request and response
 //('/') - request an root
